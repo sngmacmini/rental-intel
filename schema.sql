@@ -185,8 +185,8 @@ SELECT DISTINCT ON (listing_id)
 FROM rental_intel.rent_price_history
 ORDER BY listing_id, observed_date DESC;
 
--- View 3: Current market snapshot with latest prices
-CREATE OR REPLACE VIEW rental_intel.v_market_snapshot AS
+-- View 3: Detailed market snapshot with latest prices
+CREATE OR REPLACE VIEW rental_intel.v_market_details AS
 SELECT 
     al.*,
     lr.observed_rent AS current_rent,

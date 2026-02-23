@@ -20,7 +20,7 @@ import time
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_PORT = os.getenv('DB_PORT', '5432')
 DB_NAME = os.getenv('DB_NAME', 'rental_intel')
-DB_USER = os.getenv('DB_USER', 'postgres')
+DB_USER = os.getenv('DB_USER', 'sngmacmini')  # macOS default user
 DB_PASSWORD = os.getenv('DB_PASSWORD', '')
 
 logging.basicConfig(

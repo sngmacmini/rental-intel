@@ -230,6 +230,31 @@ JOIN rental_intel.properties p ON rph.property_id = p.property_id
 GROUP BY p.zip, p.city, p.state, rph.observed_date
 ORDER BY rph.observed_date DESC;
 
+-- View 6: Market Snapshot by State/City/ZIP (user requested)
+CREATE OR REPLACE VIEW rental_intel.v_market_snapshot AS
+SELECT 
+    p.state,
+    p.city,
+    p.zip,
+    COUNT(l.listing_id) AS active_listings,
+    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY r.observed_rent) AS median_rent,
+    AVG(r.observed_rent) AS avg_rent
+FROM rental_intel.properties p
+JOIN rental_intel.listings l ON p.property_id = l.property_id
+JOIN rental_intel.v_latest_rent r ON l.listing_id = r.listing_id
+WHERE l.listing_status = 'active'
+GROUP BY p.state, p.city, p.zip;
+
+-- View 7: ZIP Trend 30-Day (user requested)
+CREATE OR REPLACE VIEW rental_intel.v_zip_trend_30_day AS
+SELECT 
+    zip,
+    metric_date,
+    median_rent,
+    LAG(median_rent, 30) OVER (PARTITION BY zip ORDER BY metric_date) AS rent_30_days_ago,
+    median_rent - LAG(median_rent, 30) OVER (PARTITION BY zip ORDER BY metric_date) AS rent_change_30_day
+FROM rental_intel.daily_zip_metrics;
+
 -- ============================================
 -- FUNCTIONS
 -- ============================================
